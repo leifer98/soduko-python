@@ -65,8 +65,9 @@ def square(posX,posY,value = 0):
     if not value % 10 == 0:
         largeText = pygame.font.Font('freesansbold.ttf', int(height / 15))
         textSurf, textRect = text_objects(str(value % 10), largeText, white)
-        if not value%10 == solved[posX][posY]:
-            textSurf, textRect = text_objects(str(value % 10), largeText, red)
+        if not solved == []:
+            if not value%10 == solved[posX][posY]:
+                textSurf, textRect = text_objects(str(value % 10), largeText, red)
         textRect.center = ((posX * width / 9) + ((width / 9) / 2), (posY * height / 9) + ((height / 9) / 2) + 3)
         surface.blit(textSurf, textRect)
     if value > 19:
@@ -76,23 +77,23 @@ def square(posX,posY,value = 0):
         pygame.draw.rect(surface, red, (posX * width / 9 + 3, posY * height / 9 + 3, width / 9 - 6, height / 9 - 6),
                      2)
         pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_1]:
+        if pressed[pygame.K_1] or pressed[pygame.K_KP1]:
             value = 1
-        elif pressed[pygame.K_2]:
+        elif pressed[pygame.K_2] or pressed[pygame.K_KP2]:
             value = 2
-        elif pressed[pygame.K_3]:
+        elif pressed[pygame.K_3] or pressed[pygame.K_KP3]:
             value = 3
-        elif pressed[pygame.K_4]:
+        elif pressed[pygame.K_4] or pressed[pygame.K_KP4]:
             value = 4
-        elif pressed[pygame.K_5]:
+        elif pressed[pygame.K_5] or pressed[pygame.K_KP5]:
             value = 5
-        elif pressed[pygame.K_6]:
+        elif pressed[pygame.K_6] or pressed[pygame.K_KP6]:
             value = 6
-        elif pressed[pygame.K_7]:
+        elif pressed[pygame.K_7] or pressed[pygame.K_KP7]:
             value = 7
-        elif pressed[pygame.K_8]:
+        elif pressed[pygame.K_8] or pressed[pygame.K_KP8]:
             value = 8
-        elif pressed[pygame.K_9]:
+        elif pressed[pygame.K_9] or pressed[pygame.K_KP9]:
             value = 9
         elif pressed[pygame.K_UP] and posY>0:
             if reverted[posX][posY-1] == 0:
@@ -132,7 +133,7 @@ def loop():
     clock.tick(15)
 
 def solve(matrix,i,j):
-    # loop()
+    # loop() # uncomment to see resolving loops
     if i < 9:
         if j < 9:
             if matrix[i][j] == 0:
@@ -174,7 +175,7 @@ matrix = upside(matrix)
 reverted = copy.deepcopy(matrix)
 solve(matrix,0,0)
 solved = copy.deepcopy(matrix)
-matrix = copy.deepcopy(reverted)
+matrix = copy.deepcopy(reverted) # comment to see the solved version
 while True:
     loop()
 
