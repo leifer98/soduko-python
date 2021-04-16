@@ -1,15 +1,17 @@
-import pygame, time, copy
+import pygame, time, copy, math
 
 pygame.init()
-width, height, fps = 450, 450, 15 # change fps to make solution loops speed
+width, height, fps = 450, 450, 10 # change fps to make solution loops speed
 width, height = 600, 600
 surface = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Soduko')
-clock = pygame.time.Clock()
+clock, start_ticks = pygame.time.Clock(), pygame.time.get_ticks()
 pressed = pygame.key.get_pressed()
 black, white, red, green, blue, gray = (0,0,0), (255,255,255), (255,0,0), (0,255,0), (0,0,255), (50,50,50)
 reverted, solved = [], []
-score = 5
+score = 0
+
+# hard
 # matrix = [[7,0,6,0,0,0,0,8,0],
 #           [0,0,2,1,0,0,0,0,6],
 #           [0,0,0,0,0,0,0,0,7],
@@ -19,7 +21,7 @@ score = 5
 #           [0,0,0,2,7,6,0,0,0],
 #           [0,0,0,0,0,1,8,0,9],
 #           [0,0,0,0,0,8,4,0,0]]
-
+# medium
 matrix = [[0,0,5,1,0,0,0,7,0],
           [7,3,4,0,0,8,0,0,1],
           [0,0,9,7,0,0,0,3,5],
@@ -53,7 +55,7 @@ def cleanup():
                 matrix[i][j] = matrix[i][j] - 10
 
 def square(posX,posY,value = 0):
-    global score
+    global score, start_ticks
     pygame.draw.rect(surface, white, (posX * width / 9, posY * height / 9, width / 9, height / 9), 2)
     mouse = pygame.mouse.get_pos()
     if (posX * width / 9) + (width / 9)>mouse[0]>(posX * width / 9) and \
@@ -82,51 +84,73 @@ def square(posX,posY,value = 0):
         if pressed[pygame.K_1] or pressed[pygame.K_KP1]:
             value = 1
             if not value == solved[posX][posY]:
-                score = score - 50
+                score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                start_ticks = pygame.time.get_ticks()
+            elif not matrix[posX][posY] % 10 == value:
+                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                start_ticks = pygame.time.get_ticks()
         elif pressed[pygame.K_2] or pressed[pygame.K_KP2]:
             value = 2
             if not value == solved[posX][posY]:
-                score = score - 50
+                score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                start_ticks = pygame.time.get_ticks()
+            elif not matrix[posX][posY] % 10 == value:
+                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                start_ticks = pygame.time.get_ticks()
         elif pressed[pygame.K_3] or pressed[pygame.K_KP3]:
             value = 3
             if not value == solved[posX][posY]:
-                score = score - 50
+                score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                start_ticks = pygame.time.get_ticks()
+            elif not matrix[posX][posY] % 10 == value:
+                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                start_ticks = pygame.time.get_ticks()
         elif pressed[pygame.K_4] or pressed[pygame.K_KP4]:
             value = 4
             if not value == solved[posX][posY]:
-                score = score - 50
-            else:
-                score = score + 50
+                score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                start_ticks = pygame.time.get_ticks()
+            elif not matrix[posX][posY] % 10 == value:
+                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                start_ticks = pygame.time.get_ticks()
         elif pressed[pygame.K_5] or pressed[pygame.K_KP5]:
             value = 5
             if not value == solved[posX][posY]:
-                score = score - 50
-            else:
-                score = score + 50
+                score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                start_ticks = pygame.time.get_ticks()
+            elif not matrix[posX][posY] % 10 == value:
+                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                start_ticks = pygame.time.get_ticks()
         elif pressed[pygame.K_6] or pressed[pygame.K_KP6]:
             value = 6
             if not value == solved[posX][posY]:
-                score = score - 50
-            else:
-                score = score + 50
+                score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                start_ticks = pygame.time.get_ticks()
+            elif not matrix[posX][posY] % 10 == value:
+                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                start_ticks = pygame.time.get_ticks()
         elif pressed[pygame.K_7] or pressed[pygame.K_KP7]:
             value = 7
             if not value == solved[posX][posY]:
-                score = score - 50
-            else:
-                score = score + 50
+                score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                start_ticks = pygame.time.get_ticks()
+            elif not matrix[posX][posY] % 10 == value:
+                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                start_ticks = pygame.time.get_ticks()
         elif pressed[pygame.K_8] or pressed[pygame.K_KP8]:
             value = 8
             if not value == solved[posX][posY]:
-                score = score - 50
-            else:
-                score = score + 50
+                score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                start_ticks = pygame.time.get_ticks()
+            elif not matrix[posX][posY] % 10 == value:
+                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                start_ticks = pygame.time.get_ticks()
         elif pressed[pygame.K_9] or pressed[pygame.K_KP9]:
             value = 9
             if not value == solved[posX][posY]:
-                score = score - 50
-            else:
-                score = score + 50
+                score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+            elif not matrix[posX][posY] % 10 == value:
+                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
         elif pressed[pygame.K_UP] and posY>0:
             if reverted[posX][posY-1] == 0:
                 value = value - 10
@@ -143,21 +167,31 @@ def square(posX,posY,value = 0):
             if reverted[posX+1][posY] == 0:
                 value = value - 10
                 matrix[posX+1][posY] = matrix[posX+1][posY] + 20
+        elif pressed[pygame.K_SPACE] or pressed[pygame.K_0] or pressed[pygame.K_KP0] or pressed[pygame.K_DELETE] or pressed[pygame.K_BACKSPACE] :
+            value -= 10
 
     return value
 
 def scorer():
-    largeText = pygame.font.SysFont('britannic', int(height / 11))
+    largeText = pygame.font.SysFont('britannic', int(height / 5))
     textSurf, textRect = text_objects(str(score), largeText, white)
     textSurf.set_alpha(150)
-    textRect.center = (width/8.5, width/22.5)
+    textRect.center = (width/2, width - width/10)
     surface.blit(textSurf, textRect)
 
-def timer(string):
-    largeText = pygame.font.SysFont('britannic', int(height / 11))
+def timer():
+    seconds = int((pygame.time.get_ticks() - start_ticks) / 1000)
+    largeText = pygame.font.SysFont('britannic', int(height / 5))
+    string = str(seconds)
+    if seconds > 59 :
+        minutes = int(seconds / 60)
+        seconds = seconds % 60
+        string = str(minutes) + ':' + str(seconds)
+        if seconds<10:
+            string = str(minutes) + ':0' + str(seconds)
     textSurf, textRect = text_objects(string, largeText, white)
     textSurf.set_alpha(150)
-    textRect.center = (width - width/8.5, width/22.5)
+    textRect.center = (width / 2, width/10)
     surface.blit(textSurf, textRect)
 
 def loop():
@@ -176,13 +210,14 @@ def loop():
         pygame.draw.line(surface,red,(0,i*height/3-1),(width,i*height/3-1),4)
 
     scorer()
-    timer('01:01')
+    timer()
 
     pygame.display.update()
     clock.tick(fps)
 
 def solve(matrix,i,j):
-    # loop() # uncomment to see resolving loops
+    # uncomment to see resolving loops
+    # loop()
     if i < 9:
         if j < 9:
             if matrix[i][j] == 0:
@@ -224,7 +259,8 @@ matrix = upside(matrix)
 reverted = copy.deepcopy(matrix)
 solve(matrix,0,0)
 solved = copy.deepcopy(matrix)
-matrix = copy.deepcopy(reverted) # comment to see the solved version
+# comment to see the solved version
+matrix = copy.deepcopy(reverted)
 while True:
     loop()
 
