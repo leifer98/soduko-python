@@ -1,14 +1,15 @@
 import pygame, time, copy
 
 pygame.init()
-width, height = 450, 450
-# width, height = 600, 600
+width, height, fps = 450, 450, 15 # change fps to make solution loops speed
+width, height = 600, 600
 surface = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Soduko')
 clock = pygame.time.Clock()
 pressed = pygame.key.get_pressed()
 black, white, red, green, blue, gray = (0,0,0), (255,255,255), (255,0,0), (0,255,0), (0,0,255), (50,50,50)
 reverted, solved = [], []
+score = 5
 # matrix = [[7,0,6,0,0,0,0,8,0],
 #           [0,0,2,1,0,0,0,0,6],
 #           [0,0,0,0,0,0,0,0,7],
@@ -52,6 +53,7 @@ def cleanup():
                 matrix[i][j] = matrix[i][j] - 10
 
 def square(posX,posY,value = 0):
+    global score
     pygame.draw.rect(surface, white, (posX * width / 9, posY * height / 9, width / 9, height / 9), 2)
     mouse = pygame.mouse.get_pos()
     if (posX * width / 9) + (width / 9)>mouse[0]>(posX * width / 9) and \
@@ -65,7 +67,7 @@ def square(posX,posY,value = 0):
     if not value % 10 == 0:
         largeText = pygame.font.Font('freesansbold.ttf', int(height / 15))
         textSurf, textRect = text_objects(str(value % 10), largeText, white)
-        if not solved == []:
+        if not solved == []: # only for solution loops
             if not value%10 == solved[posX][posY]:
                 textSurf, textRect = text_objects(str(value % 10), largeText, red)
         textRect.center = ((posX * width / 9) + ((width / 9) / 2), (posY * height / 9) + ((height / 9) / 2) + 3)
@@ -79,22 +81,52 @@ def square(posX,posY,value = 0):
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_1] or pressed[pygame.K_KP1]:
             value = 1
+            if not value == solved[posX][posY]:
+                score = score - 50
         elif pressed[pygame.K_2] or pressed[pygame.K_KP2]:
             value = 2
+            if not value == solved[posX][posY]:
+                score = score - 50
         elif pressed[pygame.K_3] or pressed[pygame.K_KP3]:
             value = 3
+            if not value == solved[posX][posY]:
+                score = score - 50
         elif pressed[pygame.K_4] or pressed[pygame.K_KP4]:
             value = 4
+            if not value == solved[posX][posY]:
+                score = score - 50
+            else:
+                score = score + 50
         elif pressed[pygame.K_5] or pressed[pygame.K_KP5]:
             value = 5
+            if not value == solved[posX][posY]:
+                score = score - 50
+            else:
+                score = score + 50
         elif pressed[pygame.K_6] or pressed[pygame.K_KP6]:
             value = 6
+            if not value == solved[posX][posY]:
+                score = score - 50
+            else:
+                score = score + 50
         elif pressed[pygame.K_7] or pressed[pygame.K_KP7]:
             value = 7
+            if not value == solved[posX][posY]:
+                score = score - 50
+            else:
+                score = score + 50
         elif pressed[pygame.K_8] or pressed[pygame.K_KP8]:
             value = 8
+            if not value == solved[posX][posY]:
+                score = score - 50
+            else:
+                score = score + 50
         elif pressed[pygame.K_9] or pressed[pygame.K_KP9]:
             value = 9
+            if not value == solved[posX][posY]:
+                score = score - 50
+            else:
+                score = score + 50
         elif pressed[pygame.K_UP] and posY>0:
             if reverted[posX][posY-1] == 0:
                 value = value - 10
@@ -114,6 +146,20 @@ def square(posX,posY,value = 0):
 
     return value
 
+def scorer():
+    largeText = pygame.font.SysFont('britannic', int(height / 11))
+    textSurf, textRect = text_objects(str(score), largeText, white)
+    textSurf.set_alpha(150)
+    textRect.center = (width/8.5, width/22.5)
+    surface.blit(textSurf, textRect)
+
+def timer(string):
+    largeText = pygame.font.SysFont('britannic', int(height / 11))
+    textSurf, textRect = text_objects(string, largeText, white)
+    textSurf.set_alpha(150)
+    textRect.center = (width - width/8.5, width/22.5)
+    surface.blit(textSurf, textRect)
+
 def loop():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -129,8 +175,11 @@ def loop():
         pygame.draw.line(surface,red,(i*width/3-1,0),(i*width/3-1,height),4)
         pygame.draw.line(surface,red,(0,i*height/3-1),(width,i*height/3-1),4)
 
+    scorer()
+    timer('01:01')
+
     pygame.display.update()
-    clock.tick(15)
+    clock.tick(fps)
 
 def solve(matrix,i,j):
     # loop() # uncomment to see resolving loops
