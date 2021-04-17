@@ -1,7 +1,7 @@
 import pygame, time, copy, math
 
 pygame.init()
-width, height, fps = 450, 450, 10 # change fps to make solution loops speed
+width, height, fps = 450, 450, 30 # change fps to make solution loops speed
 width, height = 600, 600
 surface = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Soduko')
@@ -220,9 +220,17 @@ def square(posX,posY,value = 0):
     return value
 
 def scorer():
+    global delay, start_ticks
+    seconds = int((pygame.time.get_ticks() - start_ticks) / 1000)
     largeText = pygame.font.SysFont('britannic', int(height / 5))
-    textSurf, textRect = text_objects(str(score), largeText, white)
+    textSurf, textRect = text_objects(str(score), largeText, blue)
     textSurf.set_alpha(150)
+    if delay > 0:
+        largeText = pygame.font.SysFont('britannic', int(height / 4))
+        if winloss:
+            textSurf, textRect = text_objects(str(score), largeText, green)
+        else:
+            textSurf, textRect = text_objects(str(score), largeText, red)
     textRect.center = (width/2, width - width/10)
     surface.blit(textSurf, textRect)
 
@@ -232,7 +240,7 @@ def timer():
     if delay > 0:
         temp = seconds
         seconds = delay
-        if not temp < 3:
+        if not temp < 1:
             delay = 0
             start_ticks = pygame.time.get_ticks()
 
@@ -245,7 +253,7 @@ def timer():
             string = str(minutes) + ':0' + str(seconds)
 
     largeText = pygame.font.SysFont('britannic', int(height / 5))
-    textSurf, textRect = text_objects(string, largeText, white)
+    textSurf, textRect = text_objects(string, largeText, blue)
     textSurf.set_alpha(150)
     if delay > 0:
         largeText = pygame.font.SysFont('britannic', int(height / 4))
