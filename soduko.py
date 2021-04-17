@@ -7,9 +7,9 @@ surface = pygame.display.set_mode((width,height))
 pygame.display.set_caption('Soduko')
 clock, start_ticks = pygame.time.Clock(), pygame.time.get_ticks()
 pressed = pygame.key.get_pressed()
-black, white, red, green, blue, gray = (0,0,0), (255,255,255), (255,0,0), (0,255,0), (0,0,255), (50,50,50)
+black, white, red, green, blue, gray = (55, 62, 64), (183, 213, 212), (239, 111, 108), (63, 125, 32), (131, 128, 182), (119, 135, 139)
 reverted, solved = [], []
-score = 0
+score, delay, winloss = 0, 0, True
 
 # hard
 # matrix = [[7,0,6,0,0,0,0,8,0],
@@ -55,7 +55,7 @@ def cleanup():
                 matrix[i][j] = matrix[i][j] - 10
 
 def square(posX,posY,value = 0):
-    global score, start_ticks
+    global score, start_ticks, delay, winloss
     pygame.draw.rect(surface, white, (posX * width / 9, posY * height / 9, width / 9, height / 9), 2)
     mouse = pygame.mouse.get_pos()
     if (posX * width / 9) + (width / 9)>mouse[0]>(posX * width / 9) and \
@@ -85,72 +85,119 @@ def square(posX,posY,value = 0):
             value = 1
             if not value == solved[posX][posY]:
                 score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = False
             elif not matrix[posX][posY] % 10 == value:
-                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                score += max(100 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = True
+
         elif pressed[pygame.K_2] or pressed[pygame.K_KP2]:
             value = 2
             if not value == solved[posX][posY]:
                 score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = False
             elif not matrix[posX][posY] % 10 == value:
-                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                score += max(100 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = True
+
         elif pressed[pygame.K_3] or pressed[pygame.K_KP3]:
             value = 3
             if not value == solved[posX][posY]:
                 score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = False
             elif not matrix[posX][posY] % 10 == value:
-                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                score += max(100 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = True
+
         elif pressed[pygame.K_4] or pressed[pygame.K_KP4]:
             value = 4
             if not value == solved[posX][posY]:
                 score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = False
             elif not matrix[posX][posY] % 10 == value:
-                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                score += max(100 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = True
+
         elif pressed[pygame.K_5] or pressed[pygame.K_KP5]:
             value = 5
             if not value == solved[posX][posY]:
                 score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = False
             elif not matrix[posX][posY] % 10 == value:
-                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                score += max(100 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = True
+
         elif pressed[pygame.K_6] or pressed[pygame.K_KP6]:
             value = 6
             if not value == solved[posX][posY]:
                 score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = False
             elif not matrix[posX][posY] % 10 == value:
-                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                score += max(100 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = True
+
         elif pressed[pygame.K_7] or pressed[pygame.K_KP7]:
             value = 7
             if not value == solved[posX][posY]:
                 score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = False
             elif not matrix[posX][posY] % 10 == value:
-                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                score += max(100 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = True
+
         elif pressed[pygame.K_8] or pressed[pygame.K_KP8]:
             value = 8
             if not value == solved[posX][posY]:
                 score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = False
             elif not matrix[posX][posY] % 10 == value:
-                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                score += max(100 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                delay = int((pygame.time.get_ticks() - start_ticks)/1000)
                 start_ticks = pygame.time.get_ticks()
+                winloss = True
+
         elif pressed[pygame.K_9] or pressed[pygame.K_KP9]:
             value = 9
             if not value == solved[posX][posY]:
                 score = score - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000))
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
+                start_ticks = pygame.time.get_ticks()
+                winloss = False
             elif not matrix[posX][posY] % 10 == value:
-                score = max(score + 150 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                score += max(100 - 10 * int(math.sqrt((pygame.time.get_ticks() - start_ticks)/1000)), 20)
+                delay = int((pygame.time.get_ticks() - start_ticks) / 1000)
+                start_ticks = pygame.time.get_ticks()
+                winloss = True
+
         elif pressed[pygame.K_UP] and posY>0:
             if reverted[posX][posY-1] == 0:
                 value = value - 10
@@ -180,8 +227,15 @@ def scorer():
     surface.blit(textSurf, textRect)
 
 def timer():
+    global delay, start_ticks
     seconds = int((pygame.time.get_ticks() - start_ticks) / 1000)
-    largeText = pygame.font.SysFont('britannic', int(height / 5))
+    if delay > 0:
+        temp = seconds
+        seconds = delay
+        if not temp < 3:
+            delay = 0
+            start_ticks = pygame.time.get_ticks()
+
     string = str(seconds)
     if seconds > 59 :
         minutes = int(seconds / 60)
@@ -189,9 +243,17 @@ def timer():
         string = str(minutes) + ':' + str(seconds)
         if seconds<10:
             string = str(minutes) + ':0' + str(seconds)
+
+    largeText = pygame.font.SysFont('britannic', int(height / 5))
     textSurf, textRect = text_objects(string, largeText, white)
     textSurf.set_alpha(150)
-    textRect.center = (width / 2, width/10)
+    if delay > 0:
+        largeText = pygame.font.SysFont('britannic', int(height / 4))
+        if winloss:
+            textSurf, textRect = text_objects(string, largeText, green)
+        else:
+            textSurf, textRect = text_objects(string, largeText, red)
+    textRect.center = (width / 2, width / 10)
     surface.blit(textSurf, textRect)
 
 def loop():
