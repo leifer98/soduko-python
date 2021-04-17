@@ -10,7 +10,7 @@ pressed = pygame.key.get_pressed()
 black, white, red, green, blue, gray = (55, 62, 64), (183, 213, 212), (239, 111, 108), (63, 125, 32), (131, 128, 182), (119, 135, 139)
 reverted, solved = [], []
 score, delay, winloss, = 0, 0, True
-player, score2 = False, 0
+player, score2, pause = False, 0, False
 # hard
 # matrix = [[7,0,6,0,0,0,0,8,0],
 #           [0,0,2,1,0,0,0,0,6],
@@ -41,15 +41,60 @@ player, score2 = False, 0
 #           [0,0,0,0,0,3,0,5,0],
 #           [3,4,0,9,1,0,0,8,0]]
 # easy
-matrix = [[3,0,9,0,0,0,4,0,1],
-          [0,0,0,9,0,2,0,7,0],
-          [0,0,2,4,1,7,5,0,0],
-          [0,2,4,0,0,0,1,6,0],
-          [0,0,0,2,0,4,0,0,8],
-          [0,8,5,0,0,0,2,3,0],
-          [0,0,3,6,8,1,7,0,0],
-          [0,0,0,7,0,5,0,0,0],
-          [2,0,7,0,0,0,6,0,5]]
+# matrix = [[3,0,9,0,0,0,4,0,1],
+#           [0,0,0,9,0,2,0,7,0],
+#           [0,0,2,4,1,7,5,0,0],
+#           [0,2,4,0,0,0,1,6,0],
+#           [0,0,0,2,0,4,0,0,8],
+#           [0,8,5,0,0,0,2,3,0],
+#           [0,0,3,6,8,1,7,0,0],
+#           [0,0,0,7,0,5,0,0,0],
+#           [2,0,7,0,0,0,6,0,5]]
+# matrix = [[0, 0, 8, 9, 2, 0, 3, 0, 0],
+#          [9, 4, 0, 0, 5, 0, 0, 2, 0],
+#          [6, 0, 2, 0, 0, 0, 8, 0, 0],
+#          [0, 0, 0, 0, 0, 8, 9, 0, 3],
+#          [5, 1, 0, 3, 4, 0, 6, 8, 0],
+#          [3, 8, 6, 1, 0, 7, 0, 0, 4],
+#          [0, 3, 0, 0, 8, 0, 0, 0, 0],
+#          [8, 9, 5, 0, 3, 4, 0, 6, 0],
+#          [0, 0, 7, 2, 0, 0, 5, 3, 0]]
+# matrix = [[0, 0, 0, 0, 0, 0, 9, 8, 4],
+#         [4, 0, 0, 8, 0, 0, 2, 5, 0],
+#         [0, 8, 0, 0, 4, 9, 0, 0, 3],
+#         [9, 0, 6, 1, 5, 7, 8, 0, 2],
+#         [0, 0, 0, 0, 0, 0, 0, 4, 0],
+#         [0, 0, 0, 0, 8, 0, 1, 9, 6],
+#         [0, 3, 4, 9, 2, 8, 5, 6, 0],
+#         [6, 0, 2, 0, 1, 5, 3, 7, 0],
+#         [0, 0, 5, 0, 6, 0, 0, 0, 0]]
+# matrix = [[0, 4, 6, 1, 5, 0, 0, 0, 2],
+#         [0, 0, 0, 0, 0, 0, 0, 7, 5],
+#         [5, 7, 0, 2, 0, 0, 0, 1, 6],
+#         [3, 0, 0, 6, 7, 2, 8, 0, 0],
+#         [4, 0, 9, 8, 3, 0, 5, 2, 0],
+#         [2, 0, 0, 5, 4, 0, 1, 0, 0],
+#         [0, 0, 2, 0, 1, 5, 0, 0, 0],
+#         [8, 1, 0, 7, 6, 0, 0, 4, 0],
+#         [0, 0, 4, 0, 2, 0, 6, 0, 0]]
+# matrix = [[0, 0, 0, 5, 6, 0, 0, 1, 9],
+#         [9, 0, 0, 0, 0, 0, 6, 3, 0],
+#         [0, 0, 8, 0, 0, 3, 0, 0, 0],
+#         [0, 0, 9, 8, 3, 0, 4, 0, 0],
+#         [5, 0, 4, 7, 0, 6, 0, 0, 0],
+#         [6, 0, 0, 0, 0, 0, 0, 0, 1],
+#         [2, 3, 0, 6, 0, 9, 1, 4, 8],
+#         [8, 7, 0, 0, 0, 0, 0, 0, 5],
+#         [4, 9, 0, 2, 8, 5, 7, 6, 0]]
+matrix = [[0, 0, 5, 0, 0, 0, 2, 1, 0],
+            [1, 9, 6, 2, 8, 4, 7, 5, 3],
+            [0, 3, 0, 1, 5, 0, 4, 0, 6],
+            [3, 0, 8, 0, 0, 5, 0, 0, 0],
+            [4, 0, 0, 0, 6, 3, 0, 0, 0],
+            [5, 0, 1, 9, 2, 0, 3, 7, 4],
+            [0, 0, 0, 0, 0, 2, 5, 0, 0],
+            [0, 5, 0, 0, 3, 0, 6, 0, 0],
+            [0, 1, 3, 0, 4, 0, 0, 0, 0]]
 
 def upside(matrix):
     opp = []
@@ -59,8 +104,6 @@ def upside(matrix):
             temp += [matrix[y][x]]
         opp = opp + [temp]
     return opp
-
-
 
 def text_objects(text, font, color):
     textSurface = font.render(text, True, color)
@@ -95,7 +138,6 @@ def square(posX,posY,value = 0):
     if value > 19:
         value = value - 10
     elif value > 9:
-        # print(value, (posX,posY))
         pygame.draw.rect(surface, red, (posX * width / 9 + 3, posY * height / 9 + 3, width / 9 - 6, height / 9 - 6),
                      2)
         pressed = pygame.key.get_pressed()
@@ -304,7 +346,7 @@ def square(posX,posY,value = 0):
             if reverted[posX+1][posY] == 0:
                 value = value - 10
                 matrix[posX+1][posY] = matrix[posX+1][posY] + 20
-        elif pressed[pygame.K_SPACE] or pressed[pygame.K_0] or pressed[pygame.K_KP0] or pressed[pygame.K_DELETE] or pressed[pygame.K_BACKSPACE] :
+        elif pressed[pygame.K_0] or pressed[pygame.K_KP0] or pressed[pygame.K_DELETE] or pressed[pygame.K_BACKSPACE] :
             value -= 10
 
     return value
@@ -387,14 +429,15 @@ def timer():
     textRect2.center = (width - width / 4, width / 10)
     surface.blit(textSurf2, textRect2)
 
-
-
-
 def loop():
+    global start_ticks, pause
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+        if event.type == pygame.KEYDOWN:
+            pause = not pause
+            start_ticks = pygame.time.get_ticks()
 
     surface.fill(black)
     for i in range(9):
@@ -456,7 +499,7 @@ reverted = copy.deepcopy(matrix)
 solve(matrix,0,0)
 solved = copy.deepcopy(matrix)
 # comment to see the solved version
-matrix = copy.deepcopy(reverted)
+# matrix = copy.deepcopy(reverted)
 while True:
     loop()
 
