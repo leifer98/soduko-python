@@ -1,9 +1,9 @@
 import pygame, time, copy, math, sodukodata
 
 pygame.init()
-width, height, fps = 450, 450, 30 # change fps to make solution loops speed
+width, height, fps = 450, 450, 45 # change fps to make solution loops speed
 width, height = 600, 600
-surface = pygame.display.set_mode((width,height))
+surface = pygame.display.set_mode((width+200,height))
 pygame.display.set_caption('Soduko')
 clock, start_ticks = pygame.time.Clock(), pygame.time.get_ticks()
 pressed = pygame.key.get_pressed()
@@ -272,31 +272,29 @@ def square(posX,posY,value = 0):
 
 def scorer():
     global delay, start_ticks
-    largeText = pygame.font.SysFont('britannic', int(height / 5))
+    largeText = pygame.font.SysFont('britannic', int(height / 11))
     textSurf, textRect = text_objects(str(score), largeText, blue)
-    textSurf.set_alpha(150)
-    largeText2 = pygame.font.SysFont('britannic', int(height / 5))
+    largeText2 = pygame.font.SysFont('britannic', int(height / 11))
     textSurf2, textRect2 = text_objects(str(score2), largeText2, blue)
-    textSurf2.set_alpha(150)
 
     if not player:
         if delay > 0:
-            largeText = pygame.font.SysFont('britannic', int(height / 4))
+            largeText = pygame.font.SysFont('britannic', int(height / 9))
             if winloss:
                 textSurf, textRect = text_objects(str(score), largeText, green)
             else:
                 textSurf, textRect = text_objects(str(score), largeText, red)
     else:
         if delay > 0:
-            largeText2 = pygame.font.SysFont('britannic', int(height / 4))
+            largeText2 = pygame.font.SysFont('britannic', int(height / 9))
             if winloss:
                 textSurf2, textRect2 = text_objects(str(score2), largeText2, green)
             else:
                 textSurf2, textRect2 = text_objects(str(score2), largeText2, red)
 
-    textRect.center = (width / 4, width - width / 10)
+    textRect.center = (width + 100, 2 * (width / 10))
     surface.blit(textSurf, textRect)
-    textRect2.center = (width - width / 4, width - width / 10)
+    textRect2.center = (width + 100, width - width / 10)
     surface.blit(textSurf2, textRect2)
 
 def timer():
@@ -320,32 +318,30 @@ def timer():
         if seconds<10:
             string = str(minutes) + ':0' + str(seconds)
 
-    largeText = pygame.font.SysFont('britannic', int(height / 5))
+    largeText = pygame.font.SysFont('britannic', int(height / 11))
     textSurf, textRect = text_objects(string, largeText, blue)
-    textSurf.set_alpha(150)
 
-    largeText2 = pygame.font.SysFont('britannic', int(height / 5))
+    largeText2 = pygame.font.SysFont('britannic', int(height / 11))
     textSurf2, textRect2 = text_objects(string2, largeText2, blue)
-    textSurf2.set_alpha(150)
 
     if not player:
         if delay > 0:
-            largeText = pygame.font.SysFont('britannic', int(height / 4))
+            largeText = pygame.font.SysFont('britannic', int(height / 9))
             if winloss:
                 textSurf, textRect = text_objects(string, largeText, green)
             else:
                 textSurf, textRect = text_objects(string, largeText, red)
     else:
         if delay > 0:
-            largeText2 = pygame.font.SysFont('britannic', int(height / 4))
+            largeText2 = pygame.font.SysFont('britannic', int(height / 9))
             if winloss:
                 textSurf2, textRect2 = text_objects(string2, largeText2, green)
             else:
                 textSurf2, textRect2 = text_objects(string2, largeText2, red)
 
-    textRect.center = (width / 4, width / 10)
+    textRect.center = (width + 100, width / 10)
     surface.blit(textSurf, textRect)
-    textRect2.center = (width - width / 4, width / 10)
+    textRect2.center = (width + 100, width - 2 * (width / 10))
     surface.blit(textSurf2, textRect2)
 
 def loop():
