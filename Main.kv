@@ -1,28 +1,25 @@
-# File name: lesson7-10.py
+# File name: main.py
 #: kivy 2.0.0
-#: import FadeTransition kivy.uix.screenmanager.FadeTransition
+
 
 ScreenManagement:
-    transition: FadeTransition()
     MainScreen:
-    AnotherScreen:
+    QuickGame:
 
-<MainScreen>:
-    name: 'main'
-    Button:
-        on_release: app.root.current = 'other'
-        text: 'Next Screen'
-        font_size: 50
-
-<AnotherScreen>:
-    name: 'other'
+<QuickGame>:
+    name: 'quickgame'
     FloatLayout:
-        DrawInput
         Button:
             on_release: app.root.current = 'main'
             text: 'Home'
-            font_size: 50
-            size_hint: 0.3,0.2
+            font_size: self.height / 2
+            size_hint: 0.2,0.1
             #pos: root.right-self.width,root.top-self.height
             pos_hint: {'right':1,'top':1}
+        Button:
+            size_hint_x: 0.6
+            size_hint_y: 0.6
+            pos_hint: {'right':0.8,'top':0.8}
+
+
 
