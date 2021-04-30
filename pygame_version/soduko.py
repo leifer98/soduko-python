@@ -1,4 +1,4 @@
-import pygame, time, copy, math, sodukodata
+import pygame, copy, math, sodukodata
 
 pygame.init()
 width, height, fps = 450, 450, 45 # change fps to make solution loops speed
