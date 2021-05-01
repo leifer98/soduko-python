@@ -34,6 +34,7 @@ class Game:
             button.text = str(value)
             button.disabled = True
         button.board_pos = (i,j)
+        button.solved_value = self.solved_df[i][j]
 
     def get_cube_xy(self, i = None, j = None, n = None):
         x, y = 0, 0

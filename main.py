@@ -15,7 +15,8 @@ import pandas as pd
 
 Window.size = (350, 600)
 kivy.require('2.0.0')
-black, white = [46/250, 64/250, 87/250,1], [246/250, 216/250, 174/250,1]
+black, white, green, red = [41/250, 43/250, 44/250,1], [247/250, 247/250, 247/250,1],\
+                           [92/250, 184/250, 92/250, 1],[217/250, 83/250, 79/250,1]
 
 class MainScreen(Screen):
     pass
@@ -25,9 +26,6 @@ class MainScreen(Screen):
 
 class QuickGame(Screen):
     board = ObjectProperty(None)
-    # btn_1, btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9, btn_del = ObjectProperty(None), \
-    # ObjectProperty(None),ObjectProperty(None),ObjectProperty(None),ObjectProperty(None),ObjectProperty(None), \
-    # ObjectProperty(None),ObjectProperty(None),ObjectProperty(None),ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(QuickGame, self).__init__(**kwargs)
@@ -35,12 +33,6 @@ class QuickGame(Screen):
         self.pressed = None
 
         Clock.schedule_once(self.make_board, 0.1)
-
-    #     Clock.schedule_once(self.prnt, 0.5)
-    #
-    # def prnt(self, _):
-    #     smth = self.game.ui_df.values.tolist()
-    #     print(smth)
 
     def make_board(self,_):
         for i in range(0,9):
@@ -65,7 +57,7 @@ class QuickGame(Screen):
             self.pressed.color = black
             self.pressed.background_color = white
             self.pressed.background_normal = ''
-        if self.pressed is button:
+        if self.pressed is button or button.text == '#':
             self.pressed = None
         else:
             button.color = white
@@ -74,11 +66,24 @@ class QuickGame(Screen):
             self.pressed = button
 
     def square_press(self, button):
-        print(button.board_pos[0])
+
+        def reset_square(_):
+            button.font_size -= 6
+            button.bold = False
+
         if not self.pressed is None:
             value = self.pressed.text
             button.text = value
             self.numba_press(self.pressed)
+
+            if int(button.text) == button.solved_value:
+                button.color = green
+            else:
+                button.color = red
+            button.font_size += 6
+            button.bold = True
+
+            Clock.schedule_once(reset_square, 2)
 
 
 class ScreenManagement(ScreenManager):

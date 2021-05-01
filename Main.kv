@@ -2,11 +2,11 @@
 #: kivy 2.0.0
 
 <Button>:
-    color: [46/250, 64/250, 87/250,1]
-    background_color: [246/250, 216/250, 174/250,1]
+    color: [41/250, 43/250, 44/250,1]
+    background_color: [247/250, 247/250, 247/250,1]
     background_normal: ''
     background_disabled_normal: ''
-    disabled_color: [46/250, 64/250, 87/250,1]
+    disabled_color: [41/250, 43/250, 44/250,1]
 
 
 ScreenManagement:
@@ -23,7 +23,6 @@ ScreenManagement:
             text: 'quick match'
             font_size: self.height / 4
             size_hint: 0.6,0.1
-            #pos: root.right-self.width,root.top-self.height
             pos_hint: {'right':0.8,'top':0.8}
 
 <QuickGame>:
@@ -100,8 +99,9 @@ ScreenManagement:
                     on_press:
                         root.numba_press(self)
                 Button:
-                    id: btn_del
                     text: '#'
+                    on_press:
+                        root.numba_press(self)
             Label:
         Label:
             size_hint: None, None
