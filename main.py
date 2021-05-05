@@ -15,8 +15,8 @@ import pandas as pd
 
 Window.size = (350, 600)
 kivy.require('2.0.0')
-black, white, green, red = [41/250, 43/250, 44/250,1], [247/250, 247/250, 247/250,1],\
-                           [92/250, 184/250, 92/250, 1],[217/250, 83/250, 79/250,1]
+black, white, green, red = [0.164, 0.172, 0.176, 1], [0.988, 0.988, 0.988, 1],\
+                           [0.368, 0.736, 0.368, 1],[0.868, 0.332, 0.316, 1]
 
 class MainScreen(Screen):
     pass
@@ -24,15 +24,43 @@ class MainScreen(Screen):
     #     super(MainScreen, self).__init__(**kwargs)
 
 
-class QuickGame(Screen):
+class WarmUpScreen(Screen, Game):
     board = ObjectProperty(None)
+    score_label, changed_score_label, time_label = ObjectProperty(None), ObjectProperty(None), \
+                                                 ObjectProperty(None)
 
     def __init__(self, **kwargs):
-        super(QuickGame, self).__init__(**kwargs)
-        self.game = Game()
-        self.pressed = None
+        super(WarmUpScreen, self).__init__(**kwargs)
+        self.number_pressed, self.square_pressed = None, None
+        self.time, self.score, self.time_limit = -1, 0, 15 # to change timelimit
+        Clock.schedule_once(self.make_board,0)
+        self.clock = Clock.schedule_interval(self.update_time,1)
+        self.clock.cancel() # comment if you starting from this screen
 
-        Clock.schedule_once(self.make_board, 0.1)
+    def update_time(self, _):
+        if self.time >= self.time_limit:
+            self.time = -1
+            self.score -= 100
+            self.score_label.text = str(self.score)
+            self.changed_score_label.text = '-100'
+
+        self.time += 1
+
+        min = int(self.time / 60)
+        sec = int(self.time % 60)
+        text = ''
+        if min > 9:
+            text = str(min)+ ':'
+        else:
+            text = '0'+str(min)+':'
+        if sec > 9:
+            text += str(sec)
+        else:
+            text += '0'+str(sec)
+
+        self.time_label.text = text
+
+
 
     def make_board(self,_):
         for i in range(0,9):
@@ -43,9 +71,9 @@ class QuickGame(Screen):
                     button = Button(color= black,
                                      background_color=white)
 
-                    x, y = self.game.get_cube_xy(n=i * 9 + j)
+                    x, y = self.get_cube_xy(n=i * 9 + j)
                     button.bind(on_press = self.square_press)
-                    self.game.add_Button(x, y, button)
+                    self.add_Button(x, y, button)
 
                     another_box.add_widget(button)
                     grid.add_widget(another_box)
@@ -53,37 +81,71 @@ class QuickGame(Screen):
             self.board.add_widget(box)
 
     def numba_press(self, button):
-        if not self.pressed is None:
-            self.pressed.color = black
-            self.pressed.background_color = white
-            self.pressed.background_normal = ''
-        if self.pressed is button or button.text == '#':
-            self.pressed = None
+        if not self.number_pressed is None:
+            self.btn_unpress(self.number_pressed)
+
+        if self.number_pressed is button or button.text == '#':
+            if not self.square_pressed is None:
+                self.btn_unpress(self.square_pressed)
+                self.square_pressed = None
+            self.number_pressed = None
+
+        elif self.square_pressed is None:
+            self.btn_press(button)
+            self.number_pressed = button
         else:
-            button.color = white
-            button.background_color = black
-            button.background_normal= ''
-            self.pressed = button
+            self.btn_unpress(self.square_pressed)
+            self.number_pressed = button
+            self.square_press(self.square_pressed)
+
+    def btn_press(self, button):
+        button.color = white
+        button.background_color = black
+
+    def btn_unpress(self, button):
+        button.color = black
+        button.background_color = white
 
     def square_press(self, button):
 
-        def reset_square(_):
-            button.font_size -= 6
-            button.bold = False
-
-        if not self.pressed is None:
-            value = self.pressed.text
+        if not self.number_pressed is None:
+            value = self.number_pressed.text
             button.text = value
-            self.numba_press(self.pressed)
+
+            i, j = button.board_pos
+            self.game_df[i][j] = value
+
+            self.btn_unpress(self.number_pressed)
+            self.number_pressed = None
+            self.square_pressed = None
 
             if int(button.text) == button.solved_value:
+                button.disabled = True
                 button.color = green
+
+                change = max(100 - (5*self.time), 25)
+                self.score += change
+                self.score_label.text = str(self.score)
+                self.changed_score_label.text = '+'+str(change)
             else:
                 button.color = red
-            button.font_size += 6
-            button.bold = True
 
-            Clock.schedule_once(reset_square, 2)
+                change = min(5*self.time, 50)
+                self.score -= change
+                self.score_label.text = str(self.score)
+                self.changed_score_label.text = '-'+str(change)
+            self.time = 0
+
+        elif self.square_pressed is None:
+            self.btn_press(button)
+            self.square_pressed = button
+        else:
+            self.btn_unpress(self.square_pressed)
+            if self.square_pressed is button:
+                self.square_pressed = None
+            else:
+                self.btn_press(button)
+                self.square_pressed = button
 
 
 class ScreenManagement(ScreenManager):

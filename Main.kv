@@ -1,6 +1,10 @@
 # File name: main.py
 #: kivy 2.0.0
 
+# black [41/250, 43/250, 44/250,1]
+# white [247/250, 247/250, 247/250,1]
+
+
 <Button>:
     color: [41/250, 43/250, 44/250,1]
     background_color: [247/250, 247/250, 247/250,1]
@@ -10,24 +14,50 @@
 
 
 ScreenManagement:
-    QuickGame:
     MainScreen:
+    WarmUpScreen:
 
 <MainScreen>:
     name: 'main'
-    FloatLayout:
+    GridLayout:
+        cols: 1
+        padding: [root.width/10,root.height/10,root.width/10, root.height/10]
         Button:
             on_release:
-                app.root.current = 'quickgame'
+                #app.root.current = ''
                 root.manager.transition.direction = 'left'
-            text: 'quick match'
-            font_size: self.height / 4
-            size_hint: 0.6,0.1
-            pos_hint: {'right':0.8,'top':0.8}
+            text: 'online match'
+        Label:
+            size_hint_y: 0.05
+        Button:
+            on_release:
+                app.root.current = 'warmup'
+                root.manager.transition.direction = 'left'
+                root.manager.children[0].clock()
+            text: 'warm up'
+        Label:
+            size_hint_y: 0.05
+        Button:
+            on_release:
+                #app.root.current = ''
+                root.manager.transition.direction = 'left'
+            text: '1v1 offline'
+        Label:
+            size_hint_y: 0.05
+        Button:
+            on_release:
+                #app.root.current = ''
+                root.manager.transition.direction = 'left'
+            text: 'score board'
+        Label:
+            size_hint_y: 0.05
 
-<QuickGame>:
-    name: 'quickgame'
+<WarmUpScreen>:
+    name: 'warmup'
     board: board
+    score_label: score_label
+    changed_score_label: changed_score_label
+    time_label: time_label
 
     GridLayout:
         cols:1
@@ -41,9 +71,34 @@ ScreenManagement:
                 on_press:
                     app.root.current = 'main'
                     root.manager.transition.direction = 'right'
+                    root.clock.cancel()
 
-        Label:
+        GridLayout:
+            cols: 4
             size_hint_y: 0.4
+            padding: [0, root.height/10*0.4]
+            Button:
+                text: 'leifer (532)'
+                background_color: [41/250, 43/250, 44/250,1]
+                color: [247/250, 247/250, 247/250,1]
+            Button:
+                id: score_label
+                text: '0'
+                bold: True
+                background_color: [41/250, 43/250, 44/250,1]
+                color: [247/250, 247/250, 247/250,1]
+            Button:
+                id: changed_score_label
+                text: ''
+                background_color: [41/250, 43/250, 44/250,1]
+                color: [247/250, 247/250, 247/250,1]
+            Button:
+                id: time_label
+                text: '00:00'
+                background_color: [41/250, 43/250, 44/250,1]
+                color: [247/250, 247/250, 247/250,1]
+
+
         GridLayout:
             cols:3
             Label:
