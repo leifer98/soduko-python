@@ -8,7 +8,12 @@ black, white = [46/250, 64/250, 87/250,1], [246/250, 216/250, 174/250,1]
 class Game:
 
     def __init__(self):
-        rand = random.randint(0,11)
+        self.new_game_data()
+
+    def new_game_data(self, *args):
+        # rand = random.randint(0,11)
+        rand = random.randint(3,11) # for easy ones
+        # rand = 11
         data = self.get_start_df(rand)
         self.start_df = pd.DataFrame(data=data)
 
@@ -16,7 +21,6 @@ class Game:
         self.solved_df = pd.DataFrame(data=data)
 
         self.game_df = copy.deepcopy(self.start_df)
-
 
     def add_Button(self, i, j, button):
         value = self.game_df[i][j]

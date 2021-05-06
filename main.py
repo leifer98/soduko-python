@@ -8,6 +8,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
 from kivy.clock import Clock
+from kivy.animation import Animation
 from kivy.core.window import Window
 from game import Game
 import pandas as pd
@@ -25,24 +26,42 @@ class MainScreen(Screen):
 
 
 class WarmUpScreen(Screen, Game):
-    board = ObjectProperty(None)
-    score_label, changed_score_label, time_label = ObjectProperty(None), ObjectProperty(None), \
-                                                 ObjectProperty(None)
+    board, pop_up_message = ObjectProperty(None), ObjectProperty(None)
+    score_label, changed_score_label, time_label, del_btn = ObjectProperty(None), ObjectProperty(None), \
+                                                 ObjectProperty(None), ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(WarmUpScreen, self).__init__(**kwargs)
-        self.number_pressed, self.square_pressed = None, None
-        self.time, self.score, self.time_limit = -1, 0, 15 # to change timelimit
+        self.setup_new_game()
+
+    def setup_new_game(self, *args):
+        self.number_pressed,self.square_pressed = None,None
+        self.time,self.score,self.time_limit = -1,0,15  # to change timelimit
+
         Clock.schedule_once(self.make_board,0)
         self.clock = Clock.schedule_interval(self.update_time,1)
-        self.clock.cancel() # comment if you starting from this screen
+        self.clock.cancel()  # comment if you starting from this screen
 
-    def update_time(self, _):
+    def update_score(self, change):
+        self.score += change
+        self.score_label.text = str(self.score)
+        if change > 0:
+            self.changed_score_label.text = '+'+str(change)
+            self.changed_score_label.color = green
+        else:
+            self.changed_score_label.text = str(change)
+            self.changed_score_label.color = red
+
+        self.popup_anim(self.changed_score_label)
+        self.popup_anim(self.score_label)
+
+
+    def update_time(self, *args):
         if self.time >= self.time_limit:
             self.time = -1
-            self.score -= 100
-            self.score_label.text = str(self.score)
-            self.changed_score_label.text = '-100'
+            self.update_score(-100)
+        elif self.time >= self.time_limit-6:
+            self.popup_anim(self.time_label)
 
         self.time += 1
 
@@ -60,9 +79,7 @@ class WarmUpScreen(Screen, Game):
 
         self.time_label.text = text
 
-
-
-    def make_board(self,_):
+    def make_board(self, *args):
         for i in range(0,9):
             box = BoxLayout(padding=[2,2])
             grid = GridLayout(cols=3)
@@ -79,6 +96,15 @@ class WarmUpScreen(Screen, Game):
                     grid.add_widget(another_box)
             box.add_widget(grid)
             self.board.add_widget(box)
+
+    def popup_anim(self, widget):
+        font_size = widget.font_size
+        anim_end = Animation(font_size=font_size,duration=0.2)
+        anim_start = Animation(font_size=font_size+5,duration=0.2)
+
+        anim_start.bind(on_complete=lambda *args: Clock.schedule_once(lambda *args: anim_end.start(widget),0.2))
+
+        anim_start.start(widget)
 
     def numba_press(self, button):
         if not self.number_pressed is None:
@@ -124,16 +150,14 @@ class WarmUpScreen(Screen, Game):
                 button.color = green
 
                 change = max(100 - (5*self.time), 25)
-                self.score += change
-                self.score_label.text = str(self.score)
-                self.changed_score_label.text = '+'+str(change)
+                self.update_score(change)
+
             else:
                 button.color = red
 
-                change = min(5*self.time, 50)
-                self.score -= change
-                self.score_label.text = str(self.score)
-                self.changed_score_label.text = '-'+str(change)
+                change = -min(5*self.time, 50)
+                self.update_score(change)
+            self.popup_anim(button)
             self.time = 0
 
         elif self.square_pressed is None:
