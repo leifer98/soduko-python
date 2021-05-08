@@ -4,7 +4,6 @@
 # black [41/250, 43/250, 44/250,1]
 # white [247/250, 247/250, 247/250,1]
 
-# Define your background color Template
 <BackgroundColor@Widget>
     background_color: 1, 1, 1, 1
     canvas.before:
@@ -13,14 +12,8 @@
         Rectangle:
             size: self.size
             pos: self.pos
-# Now you can simply Mix the `BackgroundColor` class with almost
-# any other widget... to give it a background.
 <BackgroundGridLayout@GridLayout+BackgroundColor>
     background_color: 0, 0, 0, 0
-    # Default the background color for this label
-    # to r 0, g 0, b 0, a 0
-# Use the BackgroundLabel any where in your kv code like below
-
 
 <Button>:
     color: [41/250, 43/250, 44/250,1]
@@ -53,8 +46,7 @@ ScreenManagement:
                 root.manager.transition.direction = 'left'
                 quickmatch = root.manager.children[0]
 
-                if quickmatch.score == 0 and quickmatch.time < 1: \
-                print(quickmatch.time < 1);\
+                if quickmatch.score == 0 and quickmatch.overall_time < 1 and not quickmatch.pop_up_message.parent is None: \
                 quickmatch.pop_up_message.parent.remove_widget(quickmatch.pop_up_message);\
                 quickmatch.clock()
                 elif quickmatch.pop_up_message.parent is None: \
@@ -194,44 +186,48 @@ ScreenManagement:
                 size_hint: None, None
                 height: root.height/10*1
 
-        BackgroundGridLayout:
+        FloatLayout:
             id: pop_up_message
-            cols: 1
-            size_hint: .8,.3
-            pos_hint: {'center_x':0.5, 'center_y':0.5}
-            background_color: [41/250, 43/250, 44/250,1]
+            Button:
+                background_color: [41/250, 43/250, 44/250,0.3]
+                on_press:
+                    root.clock()
+                    pop_up_message.parent.remove_widget(pop_up_message)
 
-            Label:
-                text: 'I see you are in the  \n middle of something...'
-            GridLayout:
-                cols: 2
-
-                BoxLayout:
-                    padding: 5
-                    Button:
-                        text: 'new game'
-                        background_color: [0, 0, 0,1]
-                        color: [247/250, 247/250, 247/250,1]
-                        on_press:
-                            pop_up_message.parent.remove_widget(pop_up_message)
-                            #board.parent.remove_widget(board)
-                            board.clear_widgets()
-                            root.numba_press(del_btn)
-                            root.setup_new_game()
-                            root.new_game_data()
-                            root.score_label.text,root.changed_score_label.text = '0',''
-                            root.clock()
-
-
-                BoxLayout:
-                    padding: 5
-                    Button:
-                        text: 'continue'
-                        background_color: [0, 0, 0,1]
-                        color: [247/250, 247/250, 247/250,1]
-                        on_press:
-                            root.clock()
-                            pop_up_message.parent.remove_widget(pop_up_message)
+            BackgroundGridLayout:
+                cols: 1
+                size_hint: .8,.3
+                pos_hint: {'center_x':0.5, 'center_y':0.5}
+                background_color: [41/250, 43/250, 44/250,1]
+                Label:
+                    halign: 'center'
+                    text: 'I see you are in the  \n middle of something...'
+                GridLayout:
+                    cols: 2
+                    BoxLayout:
+                        padding: 5
+                        Button:
+                            text: 'new game'
+                            background_color: [0, 0, 0,1]
+                            color: [247/250, 247/250, 247/250,1]
+                            on_press:
+                                pop_up_message.children[0].children[1].text = 'I see you are in the  \n middle of something...'
+                                pop_up_message.parent.remove_widget(pop_up_message)
+                                board.clear_widgets()
+                                root.numba_press(del_btn)
+                                root.setup_new_game()
+                                root.new_game_data()
+                                root.score_label.text,root.changed_score_label.text = '0',''
+                                root.clock()
+                    BoxLayout:
+                        padding: 5
+                        Button:
+                            text: 'continue'
+                            background_color: [0, 0, 0,1]
+                            color: [247/250, 247/250, 247/250,1]
+                            on_press:
+                                root.clock()
+                                pop_up_message.parent.remove_widget(pop_up_message)
 
 
 

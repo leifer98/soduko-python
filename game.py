@@ -12,8 +12,8 @@ class Game:
 
     def new_game_data(self, *args):
         # rand = random.randint(0,11)
-        rand = random.randint(3,11) # for easy ones
-        # rand = 11
+        # rand = random.randint(3,11) # for easy ones
+        rand = 11
         data = self.get_start_df(rand)
         self.start_df = pd.DataFrame(data=data)
 

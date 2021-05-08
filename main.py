@@ -36,21 +36,31 @@ class WarmUpScreen(Screen, Game):
 
     def setup_new_game(self, *args):
         self.number_pressed,self.square_pressed = None,None
-        self.time,self.score,self.time_limit = -1,0,15  # to change timelimit
+        self.time,self.score,self.time_limit, self.overall_time = -1,0,15, 0  # to change timelimit
+        self.comboing = 0
 
         Clock.schedule_once(self.make_board,0)
         self.clock = Clock.schedule_interval(self.update_time,1)
         self.clock.cancel()  # comment if you starting from this screen
 
     def update_score(self, change):
+
         self.score += change
         self.score_label.text = str(self.score)
         if change > 0:
-            self.changed_score_label.text = '+'+str(change)
-            self.changed_score_label.color = green
+            if self.comboing > 2:
+                self.comboing = 1
+                text = self.changed_score_label.text
+                text = text.replace(text[4:],'   ')
+                self.changed_score_label.text = text
+            else:
+                self.comboing += 1
+                self.changed_score_label.text = f'+{change}  x{self.comboing}'
+                self.changed_score_label.color = green
         else:
-            self.changed_score_label.text = str(change)
+            self.changed_score_label.text = f'{change}   '
             self.changed_score_label.color = red
+            self.comboing = 0
 
         self.popup_anim(self.changed_score_label)
         self.popup_anim(self.score_label)
@@ -64,20 +74,33 @@ class WarmUpScreen(Screen, Game):
             self.popup_anim(self.time_label)
 
         self.time += 1
+        self.overall_time += 1
 
-        min = int(self.time / 60)
-        sec = int(self.time % 60)
+        if self.comboing > 0:
+            self.time_label.text = self.time_format(0)
+            if self.time > 4:
+                self.time = -1
+                self.comboing = 0
+                text = self.changed_score_label.text
+                text = text.replace(text[4:],'   ')
+                self.changed_score_label.text = text
+        else:
+            self.time_label.text = self.time_format(self.time)
+
+    def time_format(self, num):
+        min = int(num / 60)
+        sec = int(num % 60)
         text = ''
         if min > 9:
-            text = str(min)+ ':'
+            text = str(min) + ':'
         else:
-            text = '0'+str(min)+':'
+            text = '0' + str(min) + ':'
         if sec > 9:
             text += str(sec)
         else:
-            text += '0'+str(sec)
+            text += '0' + str(sec)
 
-        self.time_label.text = text
+        return text
 
     def make_board(self, *args):
         for i in range(0,9):
@@ -151,6 +174,14 @@ class WarmUpScreen(Screen, Game):
 
                 change = max(100 - (5*self.time), 25)
                 self.update_score(change)
+
+                if self.game_df.eq(self.solved_df).all(axis=None):
+                    self.score_label.parent.parent.parent.add_widget(self.pop_up_message)
+                    self.clock.cancel()
+                    text = f'Good Job! \n Score: {self.score} \n Time: {self.time_format(self.overall_time)}'
+                    self.pop_up_message.children[1].text = text
+
+
 
             else:
                 button.color = red
